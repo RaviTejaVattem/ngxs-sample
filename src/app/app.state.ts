@@ -1,17 +1,48 @@
-import { State, Action } from '@ngxs/store';
+import { Injectable } from "@angular/core";
+import { State, Action, StateContext, Store } from "@ngxs/store";
+import { Observable } from "rxjs";
 
 export class Add {
-  static readonly type = 'Add';
+  static readonly type = "Add";
 }
 
-@State<number>({
-  name: 'count',
-  defaults: 0
+export class AddNumber {
+  static readonly type = "AddNumber";
+  constructor(private number: number) {}
+}
+
+export interface CountModel {
+  count: number;
+}
+
+@State<CountModel>({
+  name: "count",
+  defaults: {
+    count: 0
+  }
 })
+@Injectable()
 export class CountState {
+  count$: Observable<number>;
+
+  constructor(private store: Store) {
+    this.count$ = this.store.select(state => state.count);
+  }
+
   @Action(Add)
-  add({ getState, setState }) {
-    const state = getState();
-    setState(state + 1);
+  add(ctx: StateContext<CountModel>) {
+    const state = ctx.getState();
+    ctx.setState({
+      ...state,
+      count: state.count + 1
+    });
+  }
+
+  @Action(AddNumber)
+  addNumber(ctx: StateContext<CountModel>, action: number) {
+    const state = ctx.getState();
+    ctx.patchState({
+      count: state.count + action
+    })
   }
 }
