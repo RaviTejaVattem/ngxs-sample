@@ -8,7 +8,7 @@ export class Add {
 
 export class AddNumber {
   static readonly type = "AddNumber";
-  constructor(private number: number) {}
+  constructor(public number: number) {}
 }
 
 export interface CountModel {
@@ -16,7 +16,7 @@ export interface CountModel {
 }
 
 @State<CountModel>({
-  name: "count",
+  name: "countState",
   defaults: {
     count: 0
   }
@@ -39,10 +39,11 @@ export class CountState {
   }
 
   @Action(AddNumber)
-  addNumber(ctx: StateContext<CountModel>, action: number) {
+  addNumber(ctx: StateContext<CountModel>, action: AddNumber) {
     const state = ctx.getState();
-    ctx.patchState({
-      count: state.count + action
-    })
+    ctx.setState({
+      ...state,
+      count: state.count + action.number
+    });
   }
 }

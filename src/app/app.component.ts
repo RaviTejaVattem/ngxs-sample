@@ -12,7 +12,7 @@ import { Add, CountState, AddNumber } from "./app.state";
   `
 })
 export class AppComponent {
-  @Select(state => state.count.count) count$: Observable<number>;
+  @Select(state => state.countState.count) count$: Observable<number>;
 
   constructor(private store: Store) {}
 
